@@ -1,0 +1,33 @@
+Phase:pastdrinker
+Input: Token DrinkMention Split Sentence
+Options: control=appelt
+
+
+Rule: PastDrinker
+(
+	({!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{Token.string =~ "(?i)stop|discontinu|quit|remote|past|former|ex-|prior", !Token.string ==~ "(?i)never|non|not|no|quitting"}
+	({Token, !Split})[0,5]
+	{DrinkMention.rule == DrinkingWord})
+	|
+	({DrinkMention.rule == DrinkingWord}
+	({Token, !Split, !Token.string =~ "(?i)please|important|must|should|trying|try|if"})[0,8]
+	{Token.string =~ "(?i)stop|discontinu|quit|remote|past|former|ex-|did", !Token.string ==~ "(?i)never|non|not|no|quitting"})
+	|
+	({!Token.string =~ "(?i)never|no"}
+	{!Token.string =~ "(?i)never|no"}
+	{!Token.string =~ "(?i)never|no"}
+	{Token.string ==~ "(?i)drank|ex-drinker|exdrinker"})
+	|
+	({Token.string =~ "(?i)did"}
+	{!Token.string ==~ "(?i)not"}
+	({Token, !Split})[0,5]
+	{DrinkMention.rule == DrinkingWord})
+	|
+	({Token.string =~ "(?i)did"}
+	{DrinkMention.rule == DrinkingWord})
+): predictor
+-->
+:predictor.DrinkingIndicator = {rule = PastDrinker}

@@ -1,0 +1,22 @@
+Phase:drinkmention
+Input: Token Sentence Lookup
+Options: control=appelt
+
+
+/*
+Rule: Eliminator
+(
+	{Sentence contains {Lookup.majorType == family_mention}} | {Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+*/
+
+
+Rule: DrinkerWord
+(
+	({Token.string =~ "(?i)drink|drank|alcohol|etoh|ethanol"})
+): predictor
+-->
+:predictor.DrinkMention = {rule = DrinkingWord}

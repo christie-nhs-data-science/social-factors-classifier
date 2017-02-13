@@ -1,0 +1,32 @@
+Phase:gazetteerpredictor
+Input: Token Sentence Lookup Split
+Options: control=appelt
+
+Rule: PastSmoker_Gazetteer
+(
+	({!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{Lookup.majorType == gaz_past_smoker})
+): predictor
+-->
+:predictor.GazetteerRules = {rule = PastSmoker_Gazetteer}
+
+Rule: CurrentSmoker_Gazetteer
+(
+	({!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{Lookup.majorType == gaz_current_smoker})
+): predictor
+-->
+:predictor.GazetteerRules = {rule = CurrentSmoker_Gazetteer}
+
+Rule: NonSmoker_Gazetteer
+(
+	({!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{!Token.string ==~ "(?i)no|non|none|not|denied"}
+	{Lookup.majorType == gaz_non_smoker})
+): predictor
+-->
+:predictor.GazetteerRules = {rule = NonSmoker_Gazetteer}

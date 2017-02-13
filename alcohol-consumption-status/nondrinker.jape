@@ -1,0 +1,22 @@
+Phase:nondrinker
+Input: Token DrinkMention Split Sentence
+Options: control=appelt
+
+
+Rule: NonDrinker
+(
+	({Token.string ==~ "(?i)no|non|none|not|nor|deny|denies|denied|denying|never|negative|neg|abstain|n't"}
+	({Token, !Token.string =~ "(?i)stop|discontinu|quit", !Split})[0,4]
+	{DrinkMention.rule == DrinkingWord})
+	|
+	({DrinkMention.rule == DrinkingWord}
+	({Token, !Split})[0,2]
+	{Token.string ==~ "(?i)no|non|not|none|nor|deny|denies|denied|denying|never|negative|neg|abstain"})
+	|
+	({Token.string =~ "(?i)nondrinker|non-drinker|nondrinking|non-drinking"})
+	|
+	({Token.string ==~ "(?i)-"}
+	{DrinkMention.rule == DrinkingWord})
+): predictor
+-->
+:predictor.DrinkingIndicator = {rule = NonDrinker}

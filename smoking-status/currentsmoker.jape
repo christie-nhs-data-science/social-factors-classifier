@@ -1,0 +1,43 @@
+Phase:currentsmoker
+Input: Token SmokeMention Split SmokingIndicator Sentence
+Options: control=appelt
+
+
+Rule: EliminatorAnotherStatus
+(
+	{Sentence contains {SmokingIndicator.rule == PastSmoker}} | {Sentence contains {SmokingIndicator.rule == NonSmoker}}
+
+):elim
+-->
+:elim.eliminate = {rule = EliminatorAnotherStatus}
+
+Rule: EliminatorMarijuana
+(
+	{Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+
+Rule: CurrentSmoker
+(
+	({Token.string =~ "(?i)has|still|continu|current|smokes|smoker"}
+	({Token, !Split})[0,5]
+	{SmokeMention.rule == SmokingWord})
+	|
+	({SmokeMention.rule == SmokingWord}
+	({Token, !Split})[0,5]
+	{Token.string =~ "(?i)still|continu|current|smokes|smoker"})
+	|
+	({Token.string ==~ "(?i)smokes|smoker|smoking"})
+	|
+	({SmokeMention.rule == SmokingWord}
+	({Token, !Split})[0,3]
+	{Token.string ==~ "\\+"})
+	|
+	({Token.string ==~ "\\+"}
+	({Token, !Split})[0,3]
+	{SmokeMention.rule == SmokingWord})
+): predictor
+-->
+:predictor.SmokingIndicator = {rule = CurrentSmoker}

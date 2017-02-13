@@ -1,0 +1,35 @@
+Phase:smokemention
+Input: Token Sentence Lookup
+Options: control=appelt
+
+
+/*
+Rule: Eliminator
+(
+	{Sentence contains {Lookup.majorType == family_mention}} | {Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+*/
+
+
+Rule: EliminatorMarijuana
+(
+	{Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+
+
+Rule: SmokingWord
+(
+	({Token.string =~ "(?i)smok|cigar|tobac|nicotine"})
+	|
+	({Token.string ==~ "(?i)tob|cig"})
+	|
+	({Token.string =~ "(?i)cigs"})
+): predictor
+-->
+:predictor.SmokeMention = {rule = SmokingWord}

@@ -1,0 +1,35 @@
+Phase:currentdrinker
+Input: Token DrinkMention Split DrinkingIndicator Sentence
+Options: control=appelt
+
+
+Rule: EliminatorAnotherStatus
+(
+	{Sentence contains {DrinkingIndicator.rule == PastDrinker}} | {Sentence contains {DrinkingIndicator.rule == NonDrinker}}
+
+):elim
+-->
+:elim.eliminate = {rule = EliminatorAnotherStatus}
+
+Rule: CurrentDrinker
+(
+	({Token.string =~ "(?i)has|still|continu|current|drinks|drinker"}
+	({Token, !Split})[0,5]
+	{DrinkMention.rule == DrinkingWord})
+	|
+	({DrinkMention.rule == DrinkingWord}
+	({Token, !Split})[0,5]
+	{Token.string =~ "(?i)still|continu|current|drinks|drinker"})
+	|
+	({Token.string ==~ "(?i)drinks|drinker|drinking|alcohol|etoh|ethanol"})
+	|
+	({DrinkMention.rule == DrinkingWord}
+	({Token, !Split})[0,3]
+	{Token.string ==~ "\\+"})
+	|
+	({Token.string ==~ "\\+"}
+	({Token, !Split})[0,3]
+	{DrinkMention.rule == DrinkingWord})
+): predictor
+-->
+:predictor.DrinkingIndicator = {rule = CurrentDrinker}

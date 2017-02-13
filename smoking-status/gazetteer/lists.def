@@ -1,0 +1,4 @@
+family.lst:family_mention
+current_smoker.lst:gaz_current_smoker
+past_smoker.lst:gaz_past_smoker
+non_smoker.lst:gaz_non_smoker

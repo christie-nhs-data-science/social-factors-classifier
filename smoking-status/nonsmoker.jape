@@ -1,0 +1,29 @@
+Phase:nonsmoker
+Input: Token SmokeMention Split Sentence
+Options: control=appelt
+
+Rule: EliminatorMarijuana
+(
+	{Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+
+Rule: NonSmoker
+(
+	({Token.string ==~ "(?i)no|non|none|not|nor|deny|denies|denied|denying|never|negative|neg|abstain|n't"}
+	({Token, !Token.string =~ "(?i)stop|discontinu|quit", !Split})[0,4]
+	{SmokeMention.rule == SmokingWord})
+	|
+	({SmokeMention.rule == SmokingWord}
+	({Token, !Split})[0,2]
+	{Token.string ==~ "(?i)no|non|not|none|nor|deny|denies|denied|denying|never|negative|neg|abstain"})
+	|
+	({Token.string =~ "(?i)nonsmoker|non-smoker|nonsmoking|non-smoking"})
+	|
+	({Token.string ==~ "(?i)-"}
+	{SmokeMention.rule == SmokingWord})
+): predictor
+-->
+:predictor.SmokingIndicator = {rule = NonSmoker}

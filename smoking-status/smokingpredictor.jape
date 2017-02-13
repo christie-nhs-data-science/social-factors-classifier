@@ -1,0 +1,66 @@
+Phase:smokingpredictor
+Input: RECORD SmokingIndicator SmokeMention GazetteerRules
+Options: control=appelt
+
+
+// Gazetteer rules
+
+Rule: PastSmokerPredictor_Gazetteer
+(
+	{RECORD contains {GazetteerRules.rule == PastSmoker_Gazetteer}}
+):predictor
+-->
+:predictor.Prediction = {PREDICTION = "PAST SMOKER"}
+
+Rule: CurrentSmokerPredictor_Gazetteer
+(
+	{RECORD contains {GazetteerRules.rule == CurrentSmoker_Gazetteer}}
+):predictor
+-->
+:predictor.Prediction = {PREDICTION = "CURRENT SMOKER"}
+
+Rule: NonSmokerPredictor_Gazetteer
+(
+	{RECORD contains {GazetteerRules.rule == NonSmoker_Gazetteer}}
+):predictor
+-->
+:predictor.Prediction = {PREDICTION = "NON-SMOKER"}
+
+// Normal rules
+
+Rule: PastSmokerPredictor
+(
+	{RECORD contains {SmokingIndicator.rule == PastSmoker}}
+): predictor_pastsmoker
+-->
+:predictor_pastsmoker.Prediction = {PREDICTION = "PAST SMOKER"}
+
+
+Rule: CurrentSmokerPredictor
+(
+	{RECORD contains {SmokingIndicator.rule == CurrentSmoker}}
+): predictor_currentsmoker
+-->
+:predictor_currentsmoker.Prediction = {PREDICTION = "CURRENT SMOKER"}
+
+Rule: NonSmokerPredictor
+(
+	{RECORD contains {SmokingIndicator.rule == NonSmoker}}
+): predictor_nonsmoker
+-->
+:predictor_nonsmoker.Prediction = {PREDICTION = "NON-SMOKER"}
+
+Rule: SmokerPredictor
+(
+	{RECORD contains SmokeMention}
+): predictor_smoker
+-->
+:predictor_smoker.Prediction = {PREDICTION = "SMOKER"}
+
+
+Rule: UnknownPredictor
+(
+	{!RECORD contains SmokeMention}
+): predictor_unknown
+-->
+:predictor_unknown.Prediction = {PREDICTION = "UNKNOWN"}

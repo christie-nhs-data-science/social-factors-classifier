@@ -1,0 +1,40 @@
+Phase:pastsmoker
+Input: Token SmokeMention Split Sentence
+Options: control=appelt
+
+Rule: EliminatorMarijuana
+(
+	{Sentence contains {Token.string =~ "(?i)marijuana"}}
+
+):elim
+-->
+:elim.eliminate = {}
+
+Rule: PastSmoker
+(
+	({!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{!Token.string =~ "(?i)not|no|please|important|must|should|trying|try|if"}
+	{Token.string =~ "(?i)stop|discontinu|quit|remote|past|former|ex-|prior", !Token.string ==~ "(?i)never|non|not|no|quitting"}
+	({Token, !Split})[0,5]
+	{SmokeMention.rule == SmokingWord})
+	|
+	({SmokeMention.rule == SmokingWord}
+	({Token, !Split, !Token.string =~ "(?i)please|important|must|should|trying|try|if"})[0,8]
+	{Token.string =~ "(?i)stop|discontinu|quit|remote|past|former|ex-|did", !Token.string ==~ "(?i)never|non|not|no|quitting"})
+	|
+	({!Token.string =~ "(?i)never|no"}
+	{!Token.string =~ "(?i)never|no"}
+	{!Token.string =~ "(?i)never|no"}
+	{Token.string ==~ "(?i)smoked|ex-smoker|exsmoker|ex-tob"})
+	|
+	({Token.string =~ "(?i)did"}
+	{!Token.string ==~ "(?i)not"}
+	({Token, !Split})[0,5]
+	{SmokeMention.rule == SmokingWord})
+	|
+	({Token.string =~ "(?i)did"}
+	{SmokeMention.rule == SmokingWord})
+): predictor
+-->
+:predictor.SmokingIndicator = {rule = PastSmoker}

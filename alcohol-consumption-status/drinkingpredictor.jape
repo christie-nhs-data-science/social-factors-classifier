@@ -1,0 +1,41 @@
+Phase:drinkingpredictor
+Input: RECORD DrinkingIndicator DrinkMention
+Options: control=appelt
+
+
+Rule: PastDrinkerPredictor
+(
+	{RECORD contains {DrinkingIndicator.rule == PastDrinker}}
+): predictor_pastdrinker
+-->
+:predictor_pastdrinker.Prediction = {PREDICTION = "PAST DRINKER"}
+
+
+Rule: CurrentDrinkerPredictor
+(
+	{RECORD contains {DrinkingIndicator.rule == CurrentDrinker}}
+): predictor_currentdrinker
+-->
+:predictor_currentdrinker.Prediction = {PREDICTION = "CURRENT DRINKER"}
+
+Rule: NonDrinkerPredictor
+(
+	{RECORD contains {DrinkingIndicator.rule == NonDrinker}}
+): predictor_nondrinker
+-->
+:predictor_nondrinker.Prediction = {PREDICTION = "NON-DRINKER"}
+
+Rule: DrinkerPredictor
+(
+	{RECORD contains DrinkMention}
+): predictor_drinker
+-->
+:predictor_drinker.Prediction = {PREDICTION = "DRINKER"}
+
+
+Rule: UnknownPredictor
+(
+	{!RECORD contains DrinkMention}
+): predictor_unknown
+-->
+:predictor_unknown.Prediction = {PREDICTION = "UNKNOWN"}
